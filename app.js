@@ -1,7 +1,7 @@
 const express = require('express')
 
-// Router
-const router = require('./routes/indexRoute.js')
+// Routers
+const index_router = require('./routes/indexRoute.js')
 
 // create app
 const app = express()
@@ -16,6 +16,6 @@ app.use(express.urlencoded({
 }))
 app.use(express.static('public'))
 
-app.use('/', router)
+app.use('/', index_router)
 
 app.listen(3000)
