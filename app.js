@@ -24,5 +24,5 @@ app.listen(PORT,() => { console.log('Server..... 200.....ok') })
 app.use('/', index_router)
 
 app.use((req,res)=>{
-  res.status(401).send('404 No Route Found')
+  res.status(404).send('404 No Route Found')
 })
