@@ -16,6 +16,13 @@ app.use(express.urlencoded({
 }))
 app.use(express.static('public'))
 
+// port
+const PORT = process.env.PORT || 8888
+app.listen(PORT,() => { console.log('Server..... 200.....ok') })
+
+// Routers
 app.use('/', index_router)
 
-app.listen(3000)
+app.use((req,res)=>{
+  res.status(401).send('404 No Route Found')
+})

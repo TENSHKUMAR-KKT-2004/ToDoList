@@ -7,5 +7,4 @@ router.post('/', indexController.post_index)
 router.get('/work', indexController.get_work)
 router.post('/work', indexController.post_work)
 
-
 module.exports = router

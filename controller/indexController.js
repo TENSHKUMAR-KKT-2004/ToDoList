@@ -19,7 +19,6 @@ const get_index = (req, res) => {
 
 const post_index = (req, res) => {
   let item = req.body.newItem
-  console.log(req.body)
   if (req.body.list === "Work") {
     workItem.push(item)
     res.redirect('/work')
