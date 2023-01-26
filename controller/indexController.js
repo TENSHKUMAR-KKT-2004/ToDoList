@@ -5,8 +5,16 @@ const mongoose = require('mongoose')
 const Items = require('../models/itemsSchema.js')
 const List = require('../models/listSchema.js')
 
-// default lists
+// date
+const today = new Date()
+const option = {
+  weekday: 'long',
+  day: 'numeric',
+  month: 'long'
+}
+const day = today.toLocaleDateString('en-US', option)
 
+// default lists
 const item1 = new Items({
   name: "Welcome to ToDoList Application"
 })
@@ -22,59 +30,67 @@ const item3 = new Items({
 const defaultItems = [item1, item2, item3]
 
 const get_index = (req, res) => {
-  const today = new Date()
-  const option = {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long'
-  }
-  const day = today.toLocaleDateString('en-US', option)
-
-  const defaultList = Items.find({},(err,foundList)=>{
-      if(foundList.length===0){
-        Items.insertMany(defaultItems)
-        res.redirect('/')
-      }else{
-        res.render('index', {
-          listTitle: day,
-          newListItem: foundList
-        })
-      }
+  const defaultList = Items.find({}, (err, foundList) => {
+    if (foundList.length === 0) {
+      Items.insertMany(defaultItems)
+      res.redirect('/')
+    } else {
+      res.render('index', {
+        listTitle: day,
+        newListItem: foundList
+      })
+    }
   })
 }
 
 const post_index = (req, res) => {
-  const newList = new Items({name:req.body.newItem})
-  newList.save()
-  res.redirect('/')
+  const itemName = req.body.newItem
+  const listName = req.body.list
+
+  const newItem = new Items({
+    name: itemName
+  })
+
+  if(listName===day){
+    newItem.save()
+    res.redirect('/')
+  }else{
+    List.findOne({name:listName},(err,foundList)=>{
+      foundList.items.push(newItem)
+      foundList.save()
+      res.redirect('/'+listName)
+    })
+  }
 }
 
-const delete_item = (req,res)=>{
+const delete_item = (req, res) => {
   const id = req.body.id
-  Items.findByIdAndRemove(id,(err)=>{
-    if(err){
+  Items.findByIdAndRemove(id, (err) => {
+    if (err) {
       console.log(err)
-    }else{
+    } else {
       res.redirect('/')
     }
   })
 }
 
-const custom_route = (req,res)=>{
+const custom_route = (req, res) => {
   const customListName = req.params.customListName
 
-  List.findOne({name:customListName},(err,foundList)=>{
-    if(!err){
-      if(!foundList){
+  List.findOne({
+    name: customListName
+  }, (err, foundList) => {
+    if (!err) {
+      if (!foundList) {
         //create a list
         const list = new List({
-          name:customListName,
-          items:defaultItems
+          name: customListName,
+          items: defaultItems
         })
         list.save()
         res.redirect('/' + customListName)
-      }else{
-        res.render('list',{
+      } else {
+        res.render('list', {
           listTitle: foundList.name,
           newListItem: foundList.items
         })
