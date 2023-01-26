@@ -1,7 +1,33 @@
 const express = require('express')
+const mongoose = require('mongoose')
+
+// Schema
+const Items = require('../models/itemsSchema.js')
 
 var items = ["Watch Thunivu Movie", "Buy GOT Book", "Watch Breaking Bad Series", ]
 var workItem = []
+
+const item1 = new Items({
+  name: "Welcome to ToDoList Application"
+})
+
+const item2 = new Items({
+  name: "Enter something down below and Hit + Button to add a new list"
+})
+
+const item3 = new Items({
+  name: "<-- Hit this Box to Delete the list"
+})
+
+const defaultItems = [item1, item2, item3]
+
+Items.insertMany(defaultItems, (err) => {
+  if (err) {
+    console.log(err)
+  }else{
+    console.log("defaultItems saved")
+  }
+})
 
 const get_index = (req, res) => {
   const today = new Date()

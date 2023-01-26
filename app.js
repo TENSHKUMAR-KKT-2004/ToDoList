@@ -1,6 +1,8 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
+mongoose.set('strictQuery', true);
+
 // Routers
 const index_router = require('./routes/indexRoute.js')
 
