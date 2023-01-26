@@ -12,7 +12,7 @@ const item1 = new Items({
 })
 
 const item2 = new Items({
-  name: "Enter something down below and Hit + Button to add a new list"
+  name: "Hit + Button to add a new list"
 })
 
 const item3 = new Items({
@@ -20,14 +20,6 @@ const item3 = new Items({
 })
 
 const defaultItems = [item1, item2, item3]
-
-Items.insertMany(defaultItems, (err) => {
-  if (err) {
-    console.log(err)
-  }else{
-    console.log("defaultItems saved")
-  }
-})
 
 const get_index = (req, res) => {
   const today = new Date()
@@ -37,9 +29,17 @@ const get_index = (req, res) => {
     month: 'long'
   }
   const day = today.toLocaleDateString('en-US', option)
-  res.render('index', {
-    listTitle: day,
-    newListItem: items
+
+  const defaultList = Items.find({},(err,foundList)=>{
+      if(foundList.length===0){
+        Items.insertMany(defaultItems)
+        res.redirect('/')
+      }else{
+        res.render('index', {
+          listTitle: day,
+          newListItem: foundList
+        })
+      }
   })
 }
 
