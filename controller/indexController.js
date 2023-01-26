@@ -4,9 +4,6 @@ const mongoose = require('mongoose')
 // Schema
 const Items = require('../models/itemsSchema.js')
 
-var items = ["Watch Thunivu Movie", "Buy GOT Book", "Watch Breaking Bad Series", ]
-var workItem = []
-
 const item1 = new Items({
   name: "Welcome to ToDoList Application"
 })
@@ -44,14 +41,9 @@ const get_index = (req, res) => {
 }
 
 const post_index = (req, res) => {
-  let item = req.body.newItem
-  if (req.body.list === "Work") {
-    workItem.push(item)
-    res.redirect('/work')
-  } else {
-    items.push(item)
-    res.redirect('/')
-  }
+  const newList = new Items({name:req.body.newItem})
+  newList.save()
+  res.redirect('/')
 }
 
 const get_work = (req, res) => {
@@ -67,9 +59,21 @@ const post_work = (req, res) => {
   res.redirect('/work')
 }
 
+const delete_item = (req,res)=>{
+  const id = req.body.id
+  Items.findByIdAndRemove(id,(err)=>{
+    if(err){
+      console.log(err)
+    }else{
+      res.redirect('/')
+    }
+  })
+}
+
 module.exports = {
   get_index,
   post_index,
   get_work,
-  post_work
+  post_work,
+  delete_item
 }
