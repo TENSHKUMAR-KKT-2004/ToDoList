@@ -4,8 +4,8 @@ const indexController = require('../controller/indexController.js')
 
 router.get('/', indexController.get_index)
 router.post('/', indexController.post_index)
-router.get('/work', indexController.get_work)
-router.post('/work', indexController.post_work)
 router.post('/delete', indexController.delete_item)
+
+router.get('/:customListName', indexController.custom_route)
 
 module.exports = router

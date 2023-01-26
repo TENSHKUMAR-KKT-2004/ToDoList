@@ -36,7 +36,7 @@ mongoose.connect(dbURI)
 
 
 // Routers
-app.use('/', index_router)
+app.use('', index_router)
 
 app.use((req, res) => {
   res.status(404).send('404 No Route Found')

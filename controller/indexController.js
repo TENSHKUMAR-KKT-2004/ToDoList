@@ -1,8 +1,11 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-// Schema
+// DB models
 const Items = require('../models/itemsSchema.js')
+const List = require('../models/listSchema.js')
+
+// default lists
 
 const item1 = new Items({
   name: "Welcome to ToDoList Application"
@@ -46,19 +49,6 @@ const post_index = (req, res) => {
   res.redirect('/')
 }
 
-const get_work = (req, res) => {
-  res.render('index', {
-    listTitle: "Work List",
-    newListItem: workItem
-  })
-}
-
-const post_work = (req, res) => {
-  let item = req.body.newItem
-  workItem.push(item)
-  res.redirect('/work')
-}
-
 const delete_item = (req,res)=>{
   const id = req.body.id
   Items.findByIdAndRemove(id,(err)=>{
@@ -70,10 +60,32 @@ const delete_item = (req,res)=>{
   })
 }
 
+const custom_route = (req,res)=>{
+  const customListName = req.params.customListName
+
+  List.findOne({name:customListName},(err,foundList)=>{
+    if(!err){
+      if(!foundList){
+        //create a list
+        const list = new List({
+          name:customListName,
+          items:defaultItems
+        })
+        list.save()
+        res.redirect('/' + customListName)
+      }else{
+        res.render('list',{
+          listTitle: foundList.name,
+          newListItem: foundList.items
+        })
+      }
+    }
+  })
+}
+
 module.exports = {
   get_index,
   post_index,
-  get_work,
-  post_work,
-  delete_item
+  delete_item,
+  custom_route
 }
