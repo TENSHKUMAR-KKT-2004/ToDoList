@@ -1,4 +1,5 @@
 const express = require('express')
+const mongoose = require('mongoose')
 
 // Routers
 const index_router = require('./routes/indexRoute.js')
@@ -16,13 +17,25 @@ app.use(express.urlencoded({
 }))
 app.use(express.static('public'))
 
-// port
+//DB connection
+const dbURI = "mongodb+srv://ToDoList-Maker:hNiFbQLr1msHvWfr@blog.dm0zbcz.mongodb.net/ToDoList?retryWrites=true&w=majority"
 const PORT = process.env.PORT || 8888
-app.listen(PORT,() => { console.log('Server..... 200.....ok') })
+
+mongoose.connect(dbURI)
+  .then((result) => {
+    console.log('DB connected.......')
+    app.listen(PORT)
+  })
+    .catch((err)=>{
+      console.log(err)
+    })
+
+// port
+
 
 // Routers
 app.use('/', index_router)
 
-app.use((req,res)=>{
+app.use((req, res) => {
   res.status(404).send('404 No Route Found')
 })
