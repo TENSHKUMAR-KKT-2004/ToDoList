@@ -1,18 +1,19 @@
 const express = require('express')
 const mongoose = require('mongoose')
+const _ = require('lodash')
 
 // DB models
 const Items = require('../models/itemsSchema.js')
 const List = require('../models/listSchema.js')
 
 // date
-const today = new Date()
-const option = {
-  weekday: 'long',
-  day: 'numeric',
-  month: 'long'
-}
-const day = today.toLocaleDateString('en-US', option)
+// const today = new Date()
+// const option = {
+//   weekday: 'long',
+//   day: 'numeric',
+//   month: 'long'
+// }
+// const day = today.toLocaleDateString('en-US', option)
 
 // default lists
 const item1 = new Items({
@@ -36,7 +37,7 @@ const get_index = (req, res) => {
       res.redirect('/')
     } else {
       res.render('index', {
-        listTitle: day,
+        listTitle: "Today",
         newListItem: foundList
       })
     }
@@ -45,13 +46,13 @@ const get_index = (req, res) => {
 
 const post_index = (req, res) => {
   const itemName = req.body.newItem
-  const listName = req.body.list
-
+  const listName = req.body.listName
+  
   const newItem = new Items({
     name: itemName
   })
 
-  if(listName===day){
+  if(listName==="Today"){
     newItem.save()
     res.redirect('/')
   }else{
@@ -65,17 +66,29 @@ const post_index = (req, res) => {
 
 const delete_item = (req, res) => {
   const id = req.body.id
-  Items.findByIdAndRemove(id, (err) => {
-    if (err) {
-      console.log(err)
-    } else {
-      res.redirect('/')
-    }
-  })
+  const listName = req.body.listName
+
+  if(listName==="Today"){
+    Items.findByIdAndRemove(id, (err) => {
+      if (err) {
+        console.log(err)
+      } else {
+        res.redirect('/')
+      }
+    })
+  } else{
+    List.findOneAndUpdate({name:listName},{$pull:{items:{_id:id}}},(err)=>{
+      if(!err){
+        res.redirect('/'+listName)
+      }else{
+        console.log(err)
+      }
+    })
+  }
 }
 
 const custom_route = (req, res) => {
-  const customListName = req.params.customListName
+  const customListName = _.capitalize(req.params.customListName)
 
   List.findOne({
     name: customListName
