@@ -1,7 +1,7 @@
 const express = require('express')
 const mongoose = require('mongoose')
 
-const itemsSchema = mongoose.Schema({
+const itemsSchema = new mongoose.Schema({
   name: String
 })
 const listSchema = mongoose.Schema({
