@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const itemsSchema = new mongoose.Schema({
   name: String
 })
-const listSchema = mongoose.Schema({
+const listSchema = new mongoose.Schema({
   name: String,
   items: [itemsSchema]
 })
